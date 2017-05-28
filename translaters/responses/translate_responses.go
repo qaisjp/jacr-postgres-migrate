@@ -40,28 +40,38 @@ func (t *responsesTranslater) Translate(rs *r.Session, db *pg.DB) (err error) {
 		return errors.Wrap(err, "could not retrieve rethink query")
 	}
 
+	log.Println("= Generating commands...")
 	commands := buildCommands(responses)
 	if !reportDuplicateCommands(commands) {
 		return errors.New("contains duplicate commands")
 	}
 
+	log.Println("= Generating contents...")
 	contents := buildContents(responses)
-	// contentCommands := buildContentCommands(contents, commands)
-
-	log.Println("Commands and contents generated... trying to insert.")
+	log.Println("= Commands and contents generated... trying to insert.")
 
 	err = db.Insert(&commands)
 	if err != nil {
 		return errors.Wrap(err, "could not insert commands")
 	}
 
+	log.Println("= Commands inserted!")
+
 	err = db.Insert(&contents)
 	if err != nil {
 		return errors.Wrap(err, "could not insert contents")
 	}
 
-	fmt.Println(commands)
-	fmt.Println(contents)
+	log.Println("= Contents inserted!")
+
+	log.Println("= Now generating content commands...")
+	contentCommands := buildContentCommands(contents, commands)
+
+	err = db.Insert(&contentCommands)
+	if err != nil {
+		return errors.Wrap(err, "could not insert contentCommands")
+	}
+
 	return nil
 }
 
@@ -78,11 +88,11 @@ func buildCommands(responses []RethinkResponse) []ResponseCommand {
 	// Create a command for ecah response, and their aliases
 	i := 0
 	for _, r := range responses {
-		commands[i] = ResponseCommand{Name: r.Name}
+		commands[i] = ResponseCommand{Name: r.Name, RethinkID: r.RethinkID}
 		i++
 
 		for _, n := range r.Aliases {
-			commands[i] = ResponseCommand{Name: n}
+			commands[i] = ResponseCommand{Name: n, RethinkID: r.RethinkID}
 			i++
 		}
 	}
@@ -113,7 +123,8 @@ func buildContents(responses []RethinkResponse) []ResponseContent {
 
 	for i, r := range responses {
 		contents[i] = ResponseContent{
-			Messages: r.Responses,
+			Messages:  r.Responses,
+			RethinkID: r.RethinkID,
 		}
 	}
 
@@ -131,13 +142,14 @@ func buildContentCommands(contents []ResponseContent, commands []ResponseCommand
 
 		// Try find the content
 		for _, c := range contents {
-			if c.ID == cmd.ID {
+			if c.RethinkID == cmd.RethinkID {
 				contentFound = true
 				contentID = c.ID
 			}
 		}
 
 		if !contentFound {
+			log.Printf("warning: content missing for command '%s', skipping.", cmd.Name)
 			continue // Skip over if we could not find the content
 		}
 

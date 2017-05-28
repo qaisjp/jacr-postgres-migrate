@@ -18,4 +18,4 @@ checkpoint:
 restore_checkpoint::
 	dropdb -U postgres jacr_dev
 	createdb -U postgres jacr_dev
-	pg_restore -U postgres -d jacr_dev $$(find dev_backup | grep \.dump | sort -V | tail -n 1)
+	pg_restore -U postgres -d jacr_dev $$(find dev_backup | grep \.dump | sort | tail -n 1)

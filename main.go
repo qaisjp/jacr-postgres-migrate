@@ -69,6 +69,7 @@ func main() {
 		if err != nil {
 			log.Panicln(errors.Wrapf(err, "translation failed in '%s'", t.Name()))
 		}
+		log.Printf("== DONE! Translater '%s' completed! ==", t.Name())
 	}
 
 	// Close RethinkDB
