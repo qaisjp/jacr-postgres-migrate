@@ -4,12 +4,12 @@ package responses
 type ResponseCommand struct {
 	ID        int
 	Name      string
-	Content   int
+	Group     int
 	RethinkID string `sql:"-"`
 }
 
 // Postgres
-type ResponseContent struct {
+type ResponseGroup struct {
 	ID        int
 	Messages  []string `pg:",array"`
 	RethinkID string   `sql:"-"`

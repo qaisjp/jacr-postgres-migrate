@@ -41,7 +41,7 @@ SET default_with_oids = false;
 CREATE TABLE response_commands (
     id integer NOT NULL,
     name character varying(32) NOT NULL,
-    content integer NOT NULL
+    "group" integer NOT NULL
 );
 
 
@@ -69,22 +69,22 @@ ALTER SEQUENCE response_commands_id_seq OWNED BY response_commands.id;
 
 
 --
--- Name: response_contents; Type: TABLE; Schema: public; Owner: postgres
+-- Name: response_groups; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE response_contents (
+CREATE TABLE response_groups (
     id integer NOT NULL,
     messages text[] NOT NULL
 );
 
 
-ALTER TABLE response_contents OWNER TO postgres;
+ALTER TABLE response_groups OWNER TO postgres;
 
 --
--- Name: response_contents_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: response_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE response_contents_id_seq
+CREATE SEQUENCE response_groups_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -92,13 +92,13 @@ CREATE SEQUENCE response_contents_id_seq
     CACHE 1;
 
 
-ALTER TABLE response_contents_id_seq OWNER TO postgres;
+ALTER TABLE response_groups_id_seq OWNER TO postgres;
 
 --
--- Name: response_contents_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: response_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE response_contents_id_seq OWNED BY response_contents.id;
+ALTER SEQUENCE response_groups_id_seq OWNED BY response_groups.id;
 
 
 --
@@ -162,10 +162,10 @@ ALTER TABLE ONLY response_commands ALTER COLUMN id SET DEFAULT nextval('response
 
 
 --
--- Name: response_contents id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: response_groups id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY response_contents ALTER COLUMN id SET DEFAULT nextval('response_contents_id_seq'::regclass);
+ALTER TABLE ONLY response_groups ALTER COLUMN id SET DEFAULT nextval('response_groups_id_seq'::regclass);
 
 
 --
@@ -184,11 +184,11 @@ ALTER TABLE ONLY response_commands
 
 
 --
--- Name: response_commands response_commands_name_content_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: response_commands response_commands_name_group_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY response_commands
-    ADD CONSTRAINT response_commands_name_content_pk UNIQUE (name, content);
+    ADD CONSTRAINT response_commands_name_group_pk UNIQUE (name, "group");
 
 
 --
@@ -200,11 +200,11 @@ ALTER TABLE ONLY response_commands
 
 
 --
--- Name: response_contents response_contents_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: response_groups response_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY response_contents
-    ADD CONSTRAINT response_contents_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY response_groups
+    ADD CONSTRAINT response_groups_pkey PRIMARY KEY (id);
 
 
 --
@@ -248,11 +248,11 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: response_commands response_commands_response_contents_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: response_commands response_commands_response_groups_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY response_commands
-    ADD CONSTRAINT response_commands_response_contents_id_fk FOREIGN KEY (content) REFERENCES response_contents(id);
+    ADD CONSTRAINT response_commands_response_groups_id_fk FOREIGN KEY ("group") REFERENCES response_groups(id);
 
 
 --

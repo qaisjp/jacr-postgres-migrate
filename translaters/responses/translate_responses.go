@@ -44,18 +44,18 @@ func (t *responsesTranslater) Translate(rs *r.Session, db *pg.DB) (err error) {
 
 	{
 
-		log.Println("= Handling contents...")
-		contents := buildContents(responses)
+		log.Println("= Handling groups...")
+		groups := buildGroups(responses)
 
-		err = db.Insert(&contents)
+		err = db.Insert(&groups)
 		if err != nil {
-			return errors.Wrap(err, "could not insert contents")
+			return errors.Wrap(err, "could not insert groups")
 		}
 
-		log.Println("= Contents handled!")
+		log.Println("= Groups handled!")
 
 		log.Println("= Handling commands...")
-		commands := buildCommands(responses, contents)
+		commands := buildCommands(responses, groups)
 		if !reportDuplicateCommands(commands) {
 			return errors.New("contains duplicate commands")
 		}
@@ -70,7 +70,7 @@ func (t *responsesTranslater) Translate(rs *r.Session, db *pg.DB) (err error) {
 	return nil
 }
 
-func buildCommands(responses []RethinkResponse, contents []ResponseContent) []ResponseCommand {
+func buildCommands(responses []RethinkResponse, groups []ResponseGroup) []ResponseCommand {
 	// Get all commands, irrespective of their group
 	var commands []ResponseCommand
 
@@ -100,32 +100,32 @@ func buildCommands(responses []RethinkResponse, contents []ResponseContent) []Re
 	// Now loop over the commands we have
 	// and update their group
 	filteredCommands := make([]ResponseCommand, len(commands))
-	contentCount := 0
+	groupCount := 0
 
 	for _, cmd := range commands {
-		contentID := -1
+		groupID := -1
 
-		// Try find the content
-		for _, c := range contents {
+		// Try find the group
+		for _, c := range groups {
 			if c.RethinkID == cmd.RethinkID {
-				contentID = c.ID
+				groupID = c.ID
 			}
 		}
 
-		if contentID == -1 {
-			log.Printf("warning: content missing for cmd '%s', skipping. (rethink: %s)", cmd.Name, cmd.RethinkID)
-			continue // Skip over if we could not find the content
+		if groupID == -1 {
+			log.Printf("warning: group missing for cmd '%s', skipping. (rethink: %s)", cmd.Name, cmd.RethinkID)
+			continue // Skip over if we could not find the group
 		}
 
-		// Now we've found the content
-		cmd.Content = contentID
-		filteredCommands[contentCount] = cmd
+		// Now we've found the group
+		cmd.Group = groupID
+		filteredCommands[groupCount] = cmd
 
-		contentCount++
+		groupCount++
 
 	}
 
-	return filteredCommands[:contentCount]
+	return filteredCommands[:groupCount]
 }
 
 func reportDuplicateCommands(cmds []ResponseCommand) (unique bool) {
@@ -139,7 +139,7 @@ func reportDuplicateCommands(cmds []ResponseCommand) (unique bool) {
 		flatCmd.RethinkID = ""
 
 		if _, ok := exists[flatCmd]; ok {
-			fmt.Printf("Warning: command pair ('%s','%s') appeared again\n", c.Name, c.Content)
+			fmt.Printf("Warning: command pair ('%s','%s') appeared again\n", c.Name, c.Group)
 			unique = false
 		}
 
@@ -149,15 +149,15 @@ func reportDuplicateCommands(cmds []ResponseCommand) (unique bool) {
 	return unique
 }
 
-func buildContents(responses []RethinkResponse) []ResponseContent {
-	contents := make([]ResponseContent, len(responses))
+func buildGroups(responses []RethinkResponse) []ResponseGroup {
+	groups := make([]ResponseGroup, len(responses))
 
 	for i, r := range responses {
-		contents[i] = ResponseContent{
+		groups[i] = ResponseGroup{
 			Messages:  r.Responses,
 			RethinkID: r.RethinkID,
 		}
 	}
 
-	return contents
+	return groups
 }
