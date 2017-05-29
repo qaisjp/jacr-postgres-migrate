@@ -18,6 +18,7 @@ var pgPassword = flag.String("pg_pass", "", "Postgres Password")
 var activeTranslaters = make([]translaters.Translater, 0)
 
 func init() {
+	
 	translaters := translaters.List()
 	enabled := make([]*bool, len(translaters))
 	for i, t := range translaters {

@@ -40,7 +40,8 @@ SET default_with_oids = false;
 
 CREATE TABLE response_commands (
     id integer NOT NULL,
-    name character varying(32) NOT NULL
+    name character varying(32) NOT NULL,
+    content integer NOT NULL
 );
 
 
@@ -66,18 +67,6 @@ ALTER TABLE response_commands_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE response_commands_id_seq OWNED BY response_commands.id;
 
-
---
--- Name: response_content_commands; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE response_content_commands (
-    command integer NOT NULL,
-    content integer NOT NULL
-);
-
-
-ALTER TABLE response_content_commands OWNER TO postgres;
 
 --
 -- Name: response_contents; Type: TABLE; Schema: public; Owner: postgres
@@ -195,19 +184,19 @@ ALTER TABLE ONLY response_commands
 
 
 --
--- Name: response_commands response_commands_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: response_commands response_commands_name_content_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY response_commands
-    ADD CONSTRAINT response_commands_name_key UNIQUE (name);
+    ADD CONSTRAINT response_commands_name_content_pk UNIQUE (name, content);
 
 
 --
--- Name: response_content_commands response_content_commands_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: response_commands response_commands_name_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY response_content_commands
-    ADD CONSTRAINT response_content_commands_pkey PRIMARY KEY (command, content);
+ALTER TABLE ONLY response_commands
+    ADD CONSTRAINT response_commands_name_pk UNIQUE (name);
 
 
 --
@@ -259,19 +248,11 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: response_content_commands response_content_commands_command_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: response_commands response_commands_response_contents_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY response_content_commands
-    ADD CONSTRAINT response_content_commands_command_fkey FOREIGN KEY (command) REFERENCES response_commands(id);
-
-
---
--- Name: response_content_commands response_content_commands_content_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY response_content_commands
-    ADD CONSTRAINT response_content_commands_content_fkey FOREIGN KEY (content) REFERENCES response_contents(id) ON DELETE CASCADE;
+ALTER TABLE ONLY response_commands
+    ADD CONSTRAINT response_commands_response_contents_id_fk FOREIGN KEY (content) REFERENCES response_contents(id);
 
 
 --

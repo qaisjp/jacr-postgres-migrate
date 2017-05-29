@@ -4,13 +4,8 @@ package responses
 type ResponseCommand struct {
 	ID        int
 	Name      string
+	Content   int
 	RethinkID string `sql:"-"`
-}
-
-// Postgres
-type ResponseContentCommands struct {
-	Command int
-	Content int
 }
 
 // Postgres
