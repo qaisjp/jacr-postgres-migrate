@@ -1,13 +1,14 @@
 .PHONY: schema
 
-init_schema::
+schema.reset::
+	dropdb -U postgres jacr_dev --if-exists
 	createdb -U postgres jacr_dev
-	cat schema.sql | psql -U postgres jacr_dev
+	cat schema.sql | psql -U postgres jacr_dev > /dev/null
+	@echo "Schema has been reset!"
 
-schema.sql::
+schema.write::
 	pg_dump -s -U postgres jacr_dev > schema.sql
-
-
+	@echo "Schema has been written to file"
 
 # save a copy of dev database into dev_backup
 checkpoint:
