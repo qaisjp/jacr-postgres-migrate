@@ -8,6 +8,7 @@ import (
 
 	// Translaters to make use of
 	_ "github.com/qaisjp/jacr-postgres-migrate/translaters/responses"
+	_ "github.com/qaisjp/jacr-postgres-migrate/translaters/songs"
 	_ "github.com/qaisjp/jacr-postgres-migrate/translaters/users"
 
 	"github.com/go-pg/pg"

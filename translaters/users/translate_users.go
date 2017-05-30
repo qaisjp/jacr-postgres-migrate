@@ -43,7 +43,7 @@ func (t *responsesTranslater) Translate(rs *r.Session, db *pg.DB) (err error) {
 		}
 	}
 	if res.Err() != nil {
-		// error
+		return errors.Wrapf(err, "could not read cursor")
 	}
 
 	return nil
