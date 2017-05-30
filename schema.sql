@@ -30,9 +30,62 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 SET search_path = public, pg_catalog;
 
+--
+-- Name: last_seen; Type: TYPE; Schema: public; Owner: qaisjp
+--
+
+CREATE TYPE last_seen AS ENUM (
+    'join',
+    'quit',
+    'message',
+    'none'
+);
+
+
+ALTER TYPE last_seen OWNER TO qaisjp;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- Name: dubtrack_users; Type: TABLE; Schema: public; Owner: qaisjp
+--
+
+CREATE TABLE dubtrack_users (
+    id integer NOT NULL,
+    karma integer DEFAULT 0 NOT NULL,
+    dub_id character(24) NOT NULL,
+    username text NOT NULL,
+    seen_time timestamp without time zone DEFAULT now() NOT NULL,
+    seen_message text DEFAULT ''::text NOT NULL,
+    seen_type last_seen,
+    rethink_id character varying(36) NOT NULL
+);
+
+
+ALTER TABLE dubtrack_users OWNER TO qaisjp;
+
+--
+-- Name: dubtrack_users_id_seq; Type: SEQUENCE; Schema: public; Owner: qaisjp
+--
+
+CREATE SEQUENCE dubtrack_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE dubtrack_users_id_seq OWNER TO qaisjp;
+
+--
+-- Name: dubtrack_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: qaisjp
+--
+
+ALTER SEQUENCE dubtrack_users_id_seq OWNED BY dubtrack_users.id;
+
 
 --
 -- Name: response_commands; Type: TABLE; Schema: public; Owner: postgres
@@ -155,6 +208,13 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
+-- Name: dubtrack_users id; Type: DEFAULT; Schema: public; Owner: qaisjp
+--
+
+ALTER TABLE ONLY dubtrack_users ALTER COLUMN id SET DEFAULT nextval('dubtrack_users_id_seq'::regclass);
+
+
+--
 -- Name: response_commands id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -173,6 +233,14 @@ ALTER TABLE ONLY response_groups ALTER COLUMN id SET DEFAULT nextval('response_g
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Name: dubtrack_users dubtrack_users_pkey; Type: CONSTRAINT; Schema: public; Owner: qaisjp
+--
+
+ALTER TABLE ONLY dubtrack_users
+    ADD CONSTRAINT dubtrack_users_pkey PRIMARY KEY (id);
 
 
 --
@@ -245,6 +313,34 @@ ALTER TABLE ONLY users
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_username_key UNIQUE (username);
+
+
+--
+-- Name: dubtrack_users_dub_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+--
+
+CREATE UNIQUE INDEX dubtrack_users_dub_id_uindex ON dubtrack_users USING btree (dub_id);
+
+
+--
+-- Name: dubtrack_users_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+--
+
+CREATE UNIQUE INDEX dubtrack_users_id_uindex ON dubtrack_users USING btree (id);
+
+
+--
+-- Name: dubtrack_users_rethinkid_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+--
+
+CREATE UNIQUE INDEX dubtrack_users_rethinkid_uindex ON dubtrack_users USING btree (rethink_id);
+
+
+--
+-- Name: dubtrack_users_username_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+--
+
+CREATE UNIQUE INDEX dubtrack_users_username_uindex ON dubtrack_users USING btree (username);
 
 
 --

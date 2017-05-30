@@ -8,6 +8,7 @@ import (
 
 	// Translaters to make use of
 	_ "github.com/qaisjp/jacr-postgres-migrate/translaters/responses"
+	_ "github.com/qaisjp/jacr-postgres-migrate/translaters/users"
 
 	"github.com/go-pg/pg"
 	"github.com/pkg/errors"
@@ -18,7 +19,7 @@ var pgPassword = flag.String("pg_pass", "", "Postgres Password")
 var activeTranslaters = make([]translaters.Translater, 0)
 
 func init() {
-	
+
 	translaters := translaters.List()
 	enabled := make([]*bool, len(translaters))
 	for i, t := range translaters {
