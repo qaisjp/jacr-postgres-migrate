@@ -119,7 +119,7 @@ ALTER SEQUENCE dubtrack_users_id_seq OWNED BY dubtrack_users.id;
 
 CREATE TABLE history (
     id integer NOT NULL,
-    dub_id character(8) NOT NULL,
+    dub_id character(24) NOT NULL,
     score_down integer NOT NULL,
     score_grab integer NOT NULL,
     score_up integer NOT NULL,
