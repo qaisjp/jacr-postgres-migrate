@@ -37,12 +37,38 @@ SET search_path = public, pg_catalog;
 CREATE TYPE last_seen AS ENUM (
     'join',
     'quit',
-    'message',
-    'none'
+    'message'
 );
 
 
 ALTER TYPE last_seen OWNER TO qaisjp;
+
+--
+-- Name: skip_reason; Type: TYPE; Schema: public; Owner: qaisjp
+--
+
+CREATE TYPE skip_reason AS ENUM (
+    'forbidden',
+    'nsfw',
+    'op',
+    'theme',
+    'unavailable'
+);
+
+
+ALTER TYPE skip_reason OWNER TO qaisjp;
+
+--
+-- Name: song_type; Type: TYPE; Schema: public; Owner: qaisjp
+--
+
+CREATE TYPE song_type AS ENUM (
+    'youtube',
+    'soundcloud'
+);
+
+
+ALTER TYPE song_type OWNER TO qaisjp;
 
 SET default_tablespace = '';
 
@@ -85,6 +111,45 @@ ALTER TABLE dubtrack_users_id_seq OWNER TO qaisjp;
 --
 
 ALTER SEQUENCE dubtrack_users_id_seq OWNED BY dubtrack_users.id;
+
+
+--
+-- Name: history; Type: TABLE; Schema: public; Owner: qaisjp
+--
+
+CREATE TABLE history (
+    id integer NOT NULL,
+    dub_id character(8) NOT NULL,
+    score_down integer NOT NULL,
+    score_grab integer NOT NULL,
+    score_up integer NOT NULL,
+    song integer NOT NULL,
+    "user" integer NOT NULL,
+    "time" timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE history OWNER TO qaisjp;
+
+--
+-- Name: history_id_seq; Type: SEQUENCE; Schema: public; Owner: qaisjp
+--
+
+CREATE SEQUENCE history_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE history_id_seq OWNER TO qaisjp;
+
+--
+-- Name: history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: qaisjp
+--
+
+ALTER SEQUENCE history_id_seq OWNED BY history.id;
 
 
 --
@@ -167,6 +232,46 @@ CREATE TABLE settings (
 ALTER TABLE settings OWNER TO postgres;
 
 --
+-- Name: songs; Type: TABLE; Schema: public; Owner: qaisjp
+--
+
+CREATE TABLE songs (
+    id integer NOT NULL,
+    fkid character varying(32) NOT NULL,
+    name text NOT NULL,
+    last_play timestamp without time zone NOT NULL,
+    skip_reason skip_reason,
+    recent_plays integer DEFAULT 0 NOT NULL,
+    total_plays integer DEFAULT 0 NOT NULL,
+    rethink_id character varying(36) NOT NULL,
+    type song_type NOT NULL
+);
+
+
+ALTER TABLE songs OWNER TO qaisjp;
+
+--
+-- Name: songs_id_seq; Type: SEQUENCE; Schema: public; Owner: qaisjp
+--
+
+CREATE SEQUENCE songs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE songs_id_seq OWNER TO qaisjp;
+
+--
+-- Name: songs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: qaisjp
+--
+
+ALTER SEQUENCE songs_id_seq OWNED BY songs.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -215,6 +320,13 @@ ALTER TABLE ONLY dubtrack_users ALTER COLUMN id SET DEFAULT nextval('dubtrack_us
 
 
 --
+-- Name: history id; Type: DEFAULT; Schema: public; Owner: qaisjp
+--
+
+ALTER TABLE ONLY history ALTER COLUMN id SET DEFAULT nextval('history_id_seq'::regclass);
+
+
+--
 -- Name: response_commands id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -226,6 +338,13 @@ ALTER TABLE ONLY response_commands ALTER COLUMN id SET DEFAULT nextval('response
 --
 
 ALTER TABLE ONLY response_groups ALTER COLUMN id SET DEFAULT nextval('response_groups_id_seq'::regclass);
+
+
+--
+-- Name: songs id; Type: DEFAULT; Schema: public; Owner: qaisjp
+--
+
+ALTER TABLE ONLY songs ALTER COLUMN id SET DEFAULT nextval('songs_id_seq'::regclass);
 
 
 --
@@ -241,6 +360,14 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 
 ALTER TABLE ONLY dubtrack_users
     ADD CONSTRAINT dubtrack_users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: history history_pkey; Type: CONSTRAINT; Schema: public; Owner: qaisjp
+--
+
+ALTER TABLE ONLY history
+    ADD CONSTRAINT history_pkey PRIMARY KEY (id);
 
 
 --
@@ -281,6 +408,14 @@ ALTER TABLE ONLY response_groups
 
 ALTER TABLE ONLY settings
     ADD CONSTRAINT settings_pkey PRIMARY KEY (name);
+
+
+--
+-- Name: songs songs_pkey; Type: CONSTRAINT; Schema: public; Owner: qaisjp
+--
+
+ALTER TABLE ONLY songs
+    ADD CONSTRAINT songs_pkey PRIMARY KEY (id);
 
 
 --
@@ -337,10 +472,61 @@ CREATE UNIQUE INDEX dubtrack_users_rethinkid_uindex ON dubtrack_users USING btre
 
 
 --
--- Name: dubtrack_users_username_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+-- Name: dubtrack_users_username_index; Type: INDEX; Schema: public; Owner: qaisjp
 --
 
-CREATE UNIQUE INDEX dubtrack_users_username_uindex ON dubtrack_users USING btree (username);
+CREATE INDEX dubtrack_users_username_index ON dubtrack_users USING btree (username);
+
+
+--
+-- Name: history_dub_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+--
+
+CREATE UNIQUE INDEX history_dub_id_uindex ON history USING btree (dub_id);
+
+
+--
+-- Name: history_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+--
+
+CREATE UNIQUE INDEX history_id_uindex ON history USING btree (id);
+
+
+--
+-- Name: songs_fkid_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+--
+
+CREATE UNIQUE INDEX songs_fkid_uindex ON songs USING btree (fkid);
+
+
+--
+-- Name: songs_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+--
+
+CREATE UNIQUE INDEX songs_id_uindex ON songs USING btree (id);
+
+
+--
+-- Name: songs_rethink_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+--
+
+CREATE UNIQUE INDEX songs_rethink_id_uindex ON songs USING btree (rethink_id);
+
+
+--
+-- Name: history history_dubtrack_users_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: qaisjp
+--
+
+ALTER TABLE ONLY history
+    ADD CONSTRAINT history_dubtrack_users_id_fk FOREIGN KEY ("user") REFERENCES dubtrack_users(id);
+
+
+--
+-- Name: history history_songs_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: qaisjp
+--
+
+ALTER TABLE ONLY history
+    ADD CONSTRAINT history_songs_id_fk FOREIGN KEY (song) REFERENCES songs(id);
 
 
 --
