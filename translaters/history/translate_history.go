@@ -44,14 +44,40 @@ func (t *responsesTranslater) Translate(rs *r.Session, db *pg.DB) (err error) {
 	bar := pb.StartNew(count)
 	defer bar.Finish()
 
-	var history History
-	for res.Next(&history) {
+	history := make(chan History, count)
+	errors := make(chan error, count)
+
+	for w := 1; w <= 100; w++ {
+		go worker(db, history, errors)
+	}
+
+	res.Listen(history)
+
+	progress := 0
+	for err := range errors {
+		progress++
+		if err == nil {
+			bar.Increment()
+		} else {
+			log.Println(err)
+		}
+
+		if progress == count {
+			close(errors)
+		}
+	}
+
+	return nil
+}
+
+func worker(db *pg.DB, hchan chan History, errs chan error) {
+	for history := range hchan {
 		dubID := history.DubID
 		if dubID == "" {
 			dubID = history.RethinkID
 		}
 
-		_, err = db.Exec(
+		_, err := db.Exec(
 			`
 			WITH
 				u as (SELECT id FROM dubtrack_users WHERE rethink_id = ?),
@@ -69,15 +95,7 @@ func (t *responsesTranslater) Translate(rs *r.Session, db *pg.DB) (err error) {
 			history.Time,
 		)
 
-		if err != nil {
-			return errors.Wrapf(err, "could not insert history %s", history.RethinkID)
-		}
-		bar.Increment()
+		// wrap returns nil if err is nil, so this is ok
+		errs <- errors.Wrapf(err, "could not insert history %s", history.RethinkID)
 	}
-
-	if res.Err() != nil {
-		return errors.Wrapf(err, "could not read cursor")
-	}
-
-	return nil
 }
