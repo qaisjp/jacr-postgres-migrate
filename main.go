@@ -10,6 +10,7 @@ import (
 	_ "github.com/qaisjp/jacr-postgres-migrate/translaters/history"
 	_ "github.com/qaisjp/jacr-postgres-migrate/translaters/motd"
 	_ "github.com/qaisjp/jacr-postgres-migrate/translaters/responses"
+	_ "github.com/qaisjp/jacr-postgres-migrate/translaters/settings"
 	_ "github.com/qaisjp/jacr-postgres-migrate/translaters/songs"
 	_ "github.com/qaisjp/jacr-postgres-migrate/translaters/users"
 

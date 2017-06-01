@@ -37,7 +37,8 @@ SET search_path = public, pg_catalog;
 CREATE TYPE last_seen AS ENUM (
     'join',
     'quit',
-    'message'
+    'message',
+    'update'
 );
 
 
@@ -86,7 +87,7 @@ CREATE TABLE dubtrack_users (
     seen_time timestamp without time zone DEFAULT now() NOT NULL,
     seen_message text DEFAULT ''::text NOT NULL,
     seen_type last_seen,
-    rethink_id character varying(36) NOT NULL
+    rethink_id character varying(36) DEFAULT ''::character varying NOT NULL
 );
 
 
@@ -150,6 +151,40 @@ ALTER TABLE history_id_seq OWNER TO qaisjp;
 --
 
 ALTER SEQUENCE history_id_seq OWNED BY history.id;
+
+
+--
+-- Name: notices; Type: TABLE; Schema: public; Owner: qaisjp
+--
+
+CREATE TABLE notices (
+    id integer NOT NULL,
+    message text NOT NULL,
+    title text NOT NULL
+);
+
+
+ALTER TABLE notices OWNER TO qaisjp;
+
+--
+-- Name: notices_id_seq; Type: SEQUENCE; Schema: public; Owner: qaisjp
+--
+
+CREATE SEQUENCE notices_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE notices_id_seq OWNER TO qaisjp;
+
+--
+-- Name: notices_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: qaisjp
+--
+
+ALTER SEQUENCE notices_id_seq OWNED BY notices.id;
 
 
 --
@@ -327,6 +362,13 @@ ALTER TABLE ONLY history ALTER COLUMN id SET DEFAULT nextval('history_id_seq'::r
 
 
 --
+-- Name: notices id; Type: DEFAULT; Schema: public; Owner: qaisjp
+--
+
+ALTER TABLE ONLY notices ALTER COLUMN id SET DEFAULT nextval('notices_id_seq'::regclass);
+
+
+--
 -- Name: response_commands id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -368,6 +410,14 @@ ALTER TABLE ONLY dubtrack_users
 
 ALTER TABLE ONLY history
     ADD CONSTRAINT history_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: notices notices_pkey; Type: CONSTRAINT; Schema: public; Owner: qaisjp
+--
+
+ALTER TABLE ONLY notices
+    ADD CONSTRAINT notices_pkey PRIMARY KEY (id);
 
 
 --
@@ -416,6 +466,14 @@ ALTER TABLE ONLY settings
 
 ALTER TABLE ONLY songs
     ADD CONSTRAINT songs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: songs songs_type_fkid_pk; Type: CONSTRAINT; Schema: public; Owner: qaisjp
+--
+
+ALTER TABLE ONLY songs
+    ADD CONSTRAINT songs_type_fkid_pk UNIQUE (type, fkid);
 
 
 --
@@ -490,6 +548,20 @@ CREATE UNIQUE INDEX history_dub_id_uindex ON history USING btree (dub_id);
 --
 
 CREATE UNIQUE INDEX history_id_uindex ON history USING btree (id);
+
+
+--
+-- Name: notices_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+--
+
+CREATE UNIQUE INDEX notices_id_uindex ON notices USING btree (id);
+
+
+--
+-- Name: notices_title_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+--
+
+CREATE UNIQUE INDEX notices_title_uindex ON notices USING btree (title);
 
 
 --
