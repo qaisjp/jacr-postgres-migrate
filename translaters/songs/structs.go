@@ -15,5 +15,8 @@ type Song struct {
 	RecentPlays int
 	TotalPlays  int
 
+	Retagged     bool
+	Autoretagged bool
+
 	RethinkID string `gorethink:"id"`
 }

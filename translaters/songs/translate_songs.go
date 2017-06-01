@@ -23,6 +23,12 @@ func (t *responsesTranslater) Name() string {
 }
 
 func (t *responsesTranslater) Translate(rs *r.Session, db *pg.DB) (err error) {
+	// log.Println("= Clearing existing song data...")
+	// _, err = db.Exec("TRUNCATE TABLE public.songs RESTART IDENTITY RESTRICT;")
+	// if err != nil {
+	// 	return errors.Wrap(err, "could not run clear existing data in postgres")
+	// }
+
 	log.Println("= Reading songs from RethinkDB...")
 
 	res, err := r.Table("songs").Count().Run(rs)

@@ -22,8 +22,13 @@ func (t *responsesTranslater) Name() string {
 }
 
 func (t *responsesTranslater) Translate(rs *r.Session, db *pg.DB) (err error) {
-	log.Println("= Reading users from RethinkDB...")
+	// log.Println("= Clearing existing user data...")
+	// _, err = db.Exec("TRUNCATE TABLE public.dubtrack_users RESTART IDENTITY RESTRICT;")
+	// if err != nil {
+	// 	return errors.Wrap(err, "could not run clear existing data in postgres")
+	// }
 
+	log.Println("= Reading users from RethinkDB...")
 	res, err := r.Table("users").Run(rs)
 
 	if err != nil {

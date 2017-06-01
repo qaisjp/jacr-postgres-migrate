@@ -23,8 +23,13 @@ func (t *responsesTranslater) Name() string {
 }
 
 func (t *responsesTranslater) Translate(rs *r.Session, db *pg.DB) (err error) {
-	log.Println("= Reading history from RethinkDB...")
+	log.Println("= Clearing existing history data...")
+	_, err = db.Exec("TRUNCATE TABLE public.history RESTART IDENTITY RESTRICT;")
+	if err != nil {
+		return errors.Wrap(err, "could not run clear existing data in postgres")
+	}
 
+	log.Println("= Reading history from RethinkDB...")
 	res, err := r.Table("history").Count().Run(rs)
 	if err != nil {
 		return errors.Wrapf(err, "could not query history count")
