@@ -445,14 +445,6 @@ ALTER TABLE ONLY response_commands
 
 
 --
--- Name: response_commands response_commands_name_group_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY response_commands
-    ADD CONSTRAINT response_commands_name_group_pk UNIQUE (name, "group");
-
-
---
 -- Name: response_commands response_commands_name_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
