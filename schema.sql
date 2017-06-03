@@ -45,7 +45,7 @@ COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching
 SET search_path = public, pg_catalog;
 
 --
--- Name: last_seen; Type: TYPE; Schema: public; Owner: qaisjp
+-- Name: last_seen; Type: TYPE; Schema: public; Owner: jacr
 --
 
 CREATE TYPE last_seen AS ENUM (
@@ -56,10 +56,10 @@ CREATE TYPE last_seen AS ENUM (
 );
 
 
-ALTER TYPE last_seen OWNER TO qaisjp;
+ALTER TYPE last_seen OWNER TO jacr;
 
 --
--- Name: skip_reason; Type: TYPE; Schema: public; Owner: qaisjp
+-- Name: skip_reason; Type: TYPE; Schema: public; Owner: jacr
 --
 
 CREATE TYPE skip_reason AS ENUM (
@@ -71,10 +71,10 @@ CREATE TYPE skip_reason AS ENUM (
 );
 
 
-ALTER TYPE skip_reason OWNER TO qaisjp;
+ALTER TYPE skip_reason OWNER TO jacr;
 
 --
--- Name: song_type; Type: TYPE; Schema: public; Owner: qaisjp
+-- Name: song_type; Type: TYPE; Schema: public; Owner: jacr
 --
 
 CREATE TYPE song_type AS ENUM (
@@ -83,14 +83,14 @@ CREATE TYPE song_type AS ENUM (
 );
 
 
-ALTER TYPE song_type OWNER TO qaisjp;
+ALTER TYPE song_type OWNER TO jacr;
 
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- Name: dubtrack_users; Type: TABLE; Schema: public; Owner: qaisjp
+-- Name: dubtrack_users; Type: TABLE; Schema: public; Owner: jacr
 --
 
 CREATE TABLE dubtrack_users (
@@ -105,10 +105,10 @@ CREATE TABLE dubtrack_users (
 );
 
 
-ALTER TABLE dubtrack_users OWNER TO qaisjp;
+ALTER TABLE dubtrack_users OWNER TO jacr;
 
 --
--- Name: dubtrack_users_id_seq; Type: SEQUENCE; Schema: public; Owner: qaisjp
+-- Name: dubtrack_users_id_seq; Type: SEQUENCE; Schema: public; Owner: jacr
 --
 
 CREATE SEQUENCE dubtrack_users_id_seq
@@ -119,17 +119,17 @@ CREATE SEQUENCE dubtrack_users_id_seq
     CACHE 1;
 
 
-ALTER TABLE dubtrack_users_id_seq OWNER TO qaisjp;
+ALTER TABLE dubtrack_users_id_seq OWNER TO jacr;
 
 --
--- Name: dubtrack_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: qaisjp
+-- Name: dubtrack_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jacr
 --
 
 ALTER SEQUENCE dubtrack_users_id_seq OWNED BY dubtrack_users.id;
 
 
 --
--- Name: history; Type: TABLE; Schema: public; Owner: qaisjp
+-- Name: history; Type: TABLE; Schema: public; Owner: jacr
 --
 
 CREATE TABLE history (
@@ -144,10 +144,10 @@ CREATE TABLE history (
 );
 
 
-ALTER TABLE history OWNER TO qaisjp;
+ALTER TABLE history OWNER TO jacr;
 
 --
--- Name: history_id_seq; Type: SEQUENCE; Schema: public; Owner: qaisjp
+-- Name: history_id_seq; Type: SEQUENCE; Schema: public; Owner: jacr
 --
 
 CREATE SEQUENCE history_id_seq
@@ -158,17 +158,17 @@ CREATE SEQUENCE history_id_seq
     CACHE 1;
 
 
-ALTER TABLE history_id_seq OWNER TO qaisjp;
+ALTER TABLE history_id_seq OWNER TO jacr;
 
 --
--- Name: history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: qaisjp
+-- Name: history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jacr
 --
 
 ALTER SEQUENCE history_id_seq OWNED BY history.id;
 
 
 --
--- Name: notices; Type: TABLE; Schema: public; Owner: qaisjp
+-- Name: notices; Type: TABLE; Schema: public; Owner: jacr
 --
 
 CREATE TABLE notices (
@@ -178,10 +178,10 @@ CREATE TABLE notices (
 );
 
 
-ALTER TABLE notices OWNER TO qaisjp;
+ALTER TABLE notices OWNER TO jacr;
 
 --
--- Name: notices_id_seq; Type: SEQUENCE; Schema: public; Owner: qaisjp
+-- Name: notices_id_seq; Type: SEQUENCE; Schema: public; Owner: jacr
 --
 
 CREATE SEQUENCE notices_id_seq
@@ -192,10 +192,10 @@ CREATE SEQUENCE notices_id_seq
     CACHE 1;
 
 
-ALTER TABLE notices_id_seq OWNER TO qaisjp;
+ALTER TABLE notices_id_seq OWNER TO jacr;
 
 --
--- Name: notices_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: qaisjp
+-- Name: notices_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jacr
 --
 
 ALTER SEQUENCE notices_id_seq OWNED BY notices.id;
@@ -281,7 +281,7 @@ CREATE TABLE settings (
 ALTER TABLE settings OWNER TO postgres;
 
 --
--- Name: songs; Type: TABLE; Schema: public; Owner: qaisjp
+-- Name: songs; Type: TABLE; Schema: public; Owner: jacr
 --
 
 CREATE TABLE songs (
@@ -299,10 +299,10 @@ CREATE TABLE songs (
 );
 
 
-ALTER TABLE songs OWNER TO qaisjp;
+ALTER TABLE songs OWNER TO jacr;
 
 --
--- Name: songs_id_seq; Type: SEQUENCE; Schema: public; Owner: qaisjp
+-- Name: songs_id_seq; Type: SEQUENCE; Schema: public; Owner: jacr
 --
 
 CREATE SEQUENCE songs_id_seq
@@ -313,10 +313,10 @@ CREATE SEQUENCE songs_id_seq
     CACHE 1;
 
 
-ALTER TABLE songs_id_seq OWNER TO qaisjp;
+ALTER TABLE songs_id_seq OWNER TO jacr;
 
 --
--- Name: songs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: qaisjp
+-- Name: songs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jacr
 --
 
 ALTER SEQUENCE songs_id_seq OWNED BY songs.id;
@@ -364,21 +364,21 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
--- Name: dubtrack_users id; Type: DEFAULT; Schema: public; Owner: qaisjp
+-- Name: dubtrack_users id; Type: DEFAULT; Schema: public; Owner: jacr
 --
 
 ALTER TABLE ONLY dubtrack_users ALTER COLUMN id SET DEFAULT nextval('dubtrack_users_id_seq'::regclass);
 
 
 --
--- Name: history id; Type: DEFAULT; Schema: public; Owner: qaisjp
+-- Name: history id; Type: DEFAULT; Schema: public; Owner: jacr
 --
 
 ALTER TABLE ONLY history ALTER COLUMN id SET DEFAULT nextval('history_id_seq'::regclass);
 
 
 --
--- Name: notices id; Type: DEFAULT; Schema: public; Owner: qaisjp
+-- Name: notices id; Type: DEFAULT; Schema: public; Owner: jacr
 --
 
 ALTER TABLE ONLY notices ALTER COLUMN id SET DEFAULT nextval('notices_id_seq'::regclass);
@@ -399,7 +399,7 @@ ALTER TABLE ONLY response_groups ALTER COLUMN id SET DEFAULT nextval('response_g
 
 
 --
--- Name: songs id; Type: DEFAULT; Schema: public; Owner: qaisjp
+-- Name: songs id; Type: DEFAULT; Schema: public; Owner: jacr
 --
 
 ALTER TABLE ONLY songs ALTER COLUMN id SET DEFAULT nextval('songs_id_seq'::regclass);
@@ -413,7 +413,7 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 
 
 --
--- Name: dubtrack_users dubtrack_users_pkey; Type: CONSTRAINT; Schema: public; Owner: qaisjp
+-- Name: dubtrack_users dubtrack_users_pkey; Type: CONSTRAINT; Schema: public; Owner: jacr
 --
 
 ALTER TABLE ONLY dubtrack_users
@@ -421,7 +421,7 @@ ALTER TABLE ONLY dubtrack_users
 
 
 --
--- Name: history history_pkey; Type: CONSTRAINT; Schema: public; Owner: qaisjp
+-- Name: history history_pkey; Type: CONSTRAINT; Schema: public; Owner: jacr
 --
 
 ALTER TABLE ONLY history
@@ -429,7 +429,7 @@ ALTER TABLE ONLY history
 
 
 --
--- Name: notices notices_pkey; Type: CONSTRAINT; Schema: public; Owner: qaisjp
+-- Name: notices notices_pkey; Type: CONSTRAINT; Schema: public; Owner: jacr
 --
 
 ALTER TABLE ONLY notices
@@ -477,7 +477,7 @@ ALTER TABLE ONLY settings
 
 
 --
--- Name: songs songs_pkey; Type: CONSTRAINT; Schema: public; Owner: qaisjp
+-- Name: songs songs_pkey; Type: CONSTRAINT; Schema: public; Owner: jacr
 --
 
 ALTER TABLE ONLY songs
@@ -485,7 +485,7 @@ ALTER TABLE ONLY songs
 
 
 --
--- Name: songs songs_type_fkid_pk; Type: CONSTRAINT; Schema: public; Owner: qaisjp
+-- Name: songs songs_type_fkid_pk; Type: CONSTRAINT; Schema: public; Owner: jacr
 --
 
 ALTER TABLE ONLY songs
@@ -525,84 +525,84 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: dubtrack_users_dub_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+-- Name: dubtrack_users_dub_id_uindex; Type: INDEX; Schema: public; Owner: jacr
 --
 
 CREATE UNIQUE INDEX dubtrack_users_dub_id_uindex ON dubtrack_users USING btree (dub_id);
 
 
 --
--- Name: dubtrack_users_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+-- Name: dubtrack_users_id_uindex; Type: INDEX; Schema: public; Owner: jacr
 --
 
 CREATE UNIQUE INDEX dubtrack_users_id_uindex ON dubtrack_users USING btree (id);
 
 
 --
--- Name: dubtrack_users_rethinkid_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+-- Name: dubtrack_users_rethinkid_uindex; Type: INDEX; Schema: public; Owner: jacr
 --
 
 CREATE UNIQUE INDEX dubtrack_users_rethinkid_uindex ON dubtrack_users USING btree (rethink_id);
 
 
 --
--- Name: dubtrack_users_username_index; Type: INDEX; Schema: public; Owner: qaisjp
+-- Name: dubtrack_users_username_index; Type: INDEX; Schema: public; Owner: jacr
 --
 
 CREATE INDEX dubtrack_users_username_index ON dubtrack_users USING btree (username);
 
 
 --
--- Name: history_dub_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+-- Name: history_dub_id_uindex; Type: INDEX; Schema: public; Owner: jacr
 --
 
 CREATE UNIQUE INDEX history_dub_id_uindex ON history USING btree (dub_id);
 
 
 --
--- Name: history_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+-- Name: history_id_uindex; Type: INDEX; Schema: public; Owner: jacr
 --
 
 CREATE UNIQUE INDEX history_id_uindex ON history USING btree (id);
 
 
 --
--- Name: notices_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+-- Name: notices_id_uindex; Type: INDEX; Schema: public; Owner: jacr
 --
 
 CREATE UNIQUE INDEX notices_id_uindex ON notices USING btree (id);
 
 
 --
--- Name: notices_title_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+-- Name: notices_title_uindex; Type: INDEX; Schema: public; Owner: jacr
 --
 
 CREATE UNIQUE INDEX notices_title_uindex ON notices USING btree (title);
 
 
 --
--- Name: songs_fkid_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+-- Name: songs_fkid_uindex; Type: INDEX; Schema: public; Owner: jacr
 --
 
 CREATE UNIQUE INDEX songs_fkid_uindex ON songs USING btree (fkid);
 
 
 --
--- Name: songs_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+-- Name: songs_id_uindex; Type: INDEX; Schema: public; Owner: jacr
 --
 
 CREATE UNIQUE INDEX songs_id_uindex ON songs USING btree (id);
 
 
 --
--- Name: songs_rethink_id_uindex; Type: INDEX; Schema: public; Owner: qaisjp
+-- Name: songs_rethink_id_uindex; Type: INDEX; Schema: public; Owner: jacr
 --
 
 CREATE UNIQUE INDEX songs_rethink_id_uindex ON songs USING btree (rethink_id);
 
 
 --
--- Name: history history_dubtrack_users_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: qaisjp
+-- Name: history history_dubtrack_users_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: jacr
 --
 
 ALTER TABLE ONLY history
@@ -610,7 +610,7 @@ ALTER TABLE ONLY history
 
 
 --
--- Name: history history_songs_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: qaisjp
+-- Name: history history_songs_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: jacr
 --
 
 ALTER TABLE ONLY history
@@ -626,7 +626,7 @@ ALTER TABLE ONLY response_commands
 
 
 --
--- Name: public; Type: ACL; Schema: -; Owner: qaisjp
+-- Name: public; Type: ACL; Schema: -; Owner: jacr
 --
 
 GRANT ALL ON SCHEMA public TO postgres;
