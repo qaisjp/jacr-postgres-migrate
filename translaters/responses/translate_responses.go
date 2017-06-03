@@ -130,20 +130,18 @@ func buildCommands(responses []RethinkResponse, groups []ResponseGroup) []Respon
 
 func reportDuplicateCommands(cmds []ResponseCommand) (unique bool) {
 	// Find duplicate commands, and report these
-	exists := make(map[ResponseCommand]struct{})
+	exists := make(map[string]struct{})
 
 	unique = true
 
 	for _, c := range cmds {
-		flatCmd := c
-		flatCmd.RethinkID = ""
 
-		if _, ok := exists[flatCmd]; ok {
-			fmt.Printf("Warning: command pair ('%s','%s') appeared again\n", c.Name, c.Group)
+		if _, ok := exists[c.Name]; ok {
+			fmt.Printf("Warning: command ('%s') appeared again\n", c.Name)
 			unique = false
 		}
 
-		exists[flatCmd] = struct{}{}
+		exists[c.Name] = struct{}{}
 	}
 
 	return unique
