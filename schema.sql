@@ -626,13 +626,6 @@ ALTER TABLE ONLY response_commands
 
 
 --
--- Name: public; Type: ACL; Schema: -; Owner: jacr
---
-
-GRANT ALL ON SCHEMA public TO postgres;
-
-
---
 -- PostgreSQL database dump complete
 --
 
