@@ -28,6 +28,20 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
+--
+-- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+
+
 SET search_path = public, pg_catalog;
 
 --
@@ -87,7 +101,7 @@ CREATE TABLE dubtrack_users (
     seen_time timestamp without time zone DEFAULT now() NOT NULL,
     seen_message text DEFAULT ''::text NOT NULL,
     seen_type last_seen,
-    rethink_id character varying(36) DEFAULT ''::character varying NOT NULL
+    rethink_id character varying(36)
 );
 
 
@@ -121,12 +135,12 @@ ALTER SEQUENCE dubtrack_users_id_seq OWNED BY dubtrack_users.id;
 CREATE TABLE history (
     id integer NOT NULL,
     dub_id character(24) NOT NULL,
-    score_down integer NOT NULL,
-    score_grab integer NOT NULL,
-    score_up integer NOT NULL,
+    score_down integer DEFAULT 0 NOT NULL,
+    score_grab integer DEFAULT 0 NOT NULL,
+    score_up integer DEFAULT 0 NOT NULL,
     song integer NOT NULL,
     "user" integer NOT NULL,
-    "time" timestamp without time zone NOT NULL
+    "time" timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -260,7 +274,7 @@ ALTER SEQUENCE response_groups_id_seq OWNED BY response_groups.id;
 
 CREATE TABLE settings (
     name text NOT NULL,
-    value text NOT NULL
+    value jsonb NOT NULL
 );
 
 
@@ -278,8 +292,10 @@ CREATE TABLE songs (
     skip_reason skip_reason,
     recent_plays integer DEFAULT 0 NOT NULL,
     total_plays integer DEFAULT 0 NOT NULL,
-    rethink_id character varying(36) NOT NULL,
-    type song_type NOT NULL
+    rethink_id character varying(36),
+    type song_type NOT NULL,
+    retagged boolean DEFAULT false NOT NULL,
+    autoretagged boolean DEFAULT false
 );
 
 
